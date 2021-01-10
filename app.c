@@ -2,10 +2,14 @@
 // Includes
 // ---------------------------------------------------------------------------------------------------------------------
 
-#include <hash_map>
 #include "app.h"
 #include "math.h"
+#include <time.h>
+#include <stdlib.h>
+#include "rtree.h"
+#include <list>
 #include "vector.hpp"
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Defines/macros
@@ -13,8 +17,8 @@
 #define LCD_WIDTH                       240
 #define LCD_HEIGHT                      320
 
-#define CIRCLE_RADIUS                   30
-#define NUMBER_OF_PARTICLES             6
+#define CIRCLE_RADIUS                   10
+#define NUMBER_OF_PARTICLES             20
 #define INITIAL_DIST_BETWEEN_PARTS      8
 #define MAX_PARTICLES_PER_ROW           (LCD_WIDTH / (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS)))
 #define MAX_PARTICLES_PER_COL           (LCD_HEIGHT / (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS)))
@@ -53,6 +57,7 @@ static const uint16_t colors[] =
 // Private variables
 // ---------------------------------------------------------------------------------------------------------------------
 static Particle_t particles[NUMBER_OF_PARTICLES];
+struct rtree *tr;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Private prototypes
@@ -64,6 +69,9 @@ static Particle_t particles[NUMBER_OF_PARTICLES];
 // ---------------------------------------------------------------------------------------------------------------------
 static void initialize_particles(void)
 {
+    srand(time(0));
+    tr = rtree_new(sizeof(Particle_t*), 2);
+    
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
         Particle_t* part = &particles[i];
@@ -74,6 +82,9 @@ static void initialize_particles(void)
         part->vy = MAX(part->vy, MIN_INITIAL_SPEED) * (1.0/REFRESH_RATE);
         part->x = CIRCLE_RADIUS + (i % MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
         part->y = CIRCLE_RADIUS + (i / MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
+        
+        double rect[] = { part->x, part->y, part->x, part->y };
+        rtree_insert(tr, rect, &part);
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
@@ -104,76 +115,91 @@ static void check_boundaries_collision(Particle_t* part)
 }
 // ---------------------------------------------------------------------------------------------------------------------
 
-static void check_particle_collision(Particle_t* part)
+static bool check_particle_collision(const double *rect, const void *item, void *udata)
 {
-    for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
+    //int* args[] = { (int*)part, (int*)&temp_list };
+    
+    Particle_t* temp = *((Particle_t**)item);
+    int* args = (int*)udata;
+    Particle_t* part = (Particle_t*)args[0];
+    list<Particle_t*>* temp_list = (list<Particle_t*>*)args[1];
+    
+    if(part != temp)
     {
-        Particle_t* temp = &particles[i];
-        if(part != temp)
+        PVector position(part->x, part->y);
+        PVector otherPosition(temp->x, temp->y);
+        
+        PVector distanceVect = PVector(position.x - otherPosition.x, position.y - otherPosition.y);
+        float distanceVectMag = distanceVect.mag();
+        float minDistance = 2 * CIRCLE_RADIUS;
+        if(distanceVectMag < minDistance)
         {
-            PVector position(part->x, part->y);
-            PVector otherPosition(temp->x, temp->y);
+            float distanceCorrection = (minDistance - distanceVectMag) / 2.0;
+            PVector d = PVector(distanceVect.x, distanceVect.y);
+            PVector correctionVector = d.normalize().mult(distanceCorrection);
             
-            PVector distanceVect = PVector(position.x - otherPosition.x, position.y - otherPosition.y);
-            float distanceVectMag = distanceVect.mag();
-            float minDistance = 2 * CIRCLE_RADIUS;
-            if(distanceVectMag < minDistance)
-            {
-                float distanceCorrection = (minDistance - distanceVectMag) / 2.0;
-                PVector d = PVector(distanceVect.x, distanceVect.y);
-                PVector correctionVector = d.normalize().mult(distanceCorrection);
-                
-                distanceVect = PVector(position.x - otherPosition.x, position.y - otherPosition.y);
-                
-                float theta  = distanceVect.heading();
-                float sine = sin(theta);
-                float cosine = cos(theta);
-                
-                PVector bTemp[2];
-                
-                bTemp[1].x  = cosine * distanceVect.x + sine * distanceVect.y;
-                bTemp[1].y  = cosine * distanceVect.y - sine * distanceVect.x;
-                
-                PVector vTemp[2];
-                
-                vTemp[0].x  = cosine * part->vx + sine * part->vy;
-                vTemp[0].y  = cosine * part->vy - sine * part->vx;
-                vTemp[1].x  = cosine * temp->vx + sine * temp->vy;
-                vTemp[1].y  = cosine * temp->vy - sine * temp->vx;
-                
-                PVector vFinal[2];
-                
-                //vFinal[0].x = ((m - other.m) * vTemp[0].x + 2 * other.m * vTemp[1].x) / (m + other.m);
-                vFinal[0].x = vTemp[1].x;
-                vFinal[0].y = vTemp[0].y;
-                
-                //vFinal[1].x = ((other.m - m) * vTemp[1].x + 2 * m * vTemp[0].x) / (m + other.m);
-                vFinal[1].x = vTemp[0].x;
-                vFinal[1].y = vTemp[1].y;
-                
-                bTemp[0].x += vFinal[0].x;
-                bTemp[1].x += vFinal[1].x;
-                
-                PVector bFinal[2];
-                
-                bFinal[0].x = cosine * bTemp[0].x - sine * bTemp[0].y;
-                bFinal[0].y = cosine * bTemp[0].y + sine * bTemp[0].x;
-                bFinal[1].x = cosine * bTemp[1].x - sine * bTemp[1].y;
-                bFinal[1].y = cosine * bTemp[1].y + sine * bTemp[1].x;
-                
-                part->vx = cosine * vFinal[0].x - sine * vFinal[0].y;
-                part->vy = cosine * vFinal[0].y + sine * vFinal[0].x;
-                temp->vx = cosine * vFinal[1].x - sine * vFinal[1].y;
-                temp->vy = cosine * vFinal[1].y + sine * vFinal[1].x;
-                
-                part->x = position.x;
-                part->y = position.y;
-                
-                temp->x = otherPosition.x;
-                temp->y = otherPosition.y;
-            }
+            otherPosition.sub(correctionVector);
+            position.add(correctionVector);
+            
+            distanceVect = PVector(position.x - otherPosition.x, position.y - otherPosition.y);
+            
+            float theta  = distanceVect.heading();
+            float sine = sin(theta);
+            float cosine = cos(theta);
+            
+            PVector bTemp[2];
+            
+            bTemp[1].x  = cosine * distanceVect.x + sine * distanceVect.y;
+            bTemp[1].y  = cosine * distanceVect.y - sine * distanceVect.x;
+            
+            PVector vTemp[2];
+            
+            vTemp[0].x  = cosine * part->vx + sine * part->vy;
+            vTemp[0].y  = cosine * part->vy - sine * part->vx;
+            vTemp[1].x  = cosine * temp->vx + sine * temp->vy;
+            vTemp[1].y  = cosine * temp->vy - sine * temp->vx;
+            
+            PVector vFinal[2];
+            
+            //vFinal[0].x = ((m - other.m) * vTemp[0].x + 2 * other.m * vTemp[1].x) / (m + other.m);
+            vFinal[0].x = vTemp[1].x;
+            vFinal[0].y = vTemp[0].y;
+            
+            //vFinal[1].x = ((other.m - m) * vTemp[1].x + 2 * m * vTemp[0].x) / (m + other.m);
+            vFinal[1].x = vTemp[0].x;
+            vFinal[1].y = vTemp[1].y;
+            
+            bTemp[0].x += vFinal[0].x;
+            bTemp[1].x += vFinal[1].x;
+            
+            PVector bFinal[2];
+            
+            bFinal[0].x = cosine * bTemp[0].x - sine * bTemp[0].y;
+            bFinal[0].y = cosine * bTemp[0].y + sine * bTemp[0].x;
+            bFinal[1].x = cosine * bTemp[1].x - sine * bTemp[1].y;
+            bFinal[1].y = cosine * bTemp[1].y + sine * bTemp[1].x;
+            
+            part->vx = cosine * vFinal[0].x - sine * vFinal[0].y;
+            part->vy = cosine * vFinal[0].y + sine * vFinal[0].x;
+            temp->vx = cosine * vFinal[1].x - sine * vFinal[1].y;
+            temp->vy = cosine * vFinal[1].y + sine * vFinal[1].x;
+            
+            part->x = position.x;
+            part->y = position.y;
+            
+            temp->x = otherPosition.x;
+            temp->y = otherPosition.y;
+            
+            temp_list->push_front(temp);
         }
     }
+    else
+    {
+        static int a = 0;
+        a++;
+    }
+    
+    return true;
 }
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -185,7 +211,29 @@ static void update_particles(void)
         part->x += part->vx;
         part->y += part->vy;
         check_boundaries_collision(part);
-        check_particle_collision(part);
+        
+        list<Particle_t*> temp_list;
+        temp_list.push_front(part);
+        int* args[] = { (int*)part, (int*)&temp_list };
+        
+        double rect[] = { 
+            part->x - 2 * CIRCLE_RADIUS, 
+            part->y - 2 * CIRCLE_RADIUS, 
+            part->x + 2 * CIRCLE_RADIUS, 
+            part->y + 2 * CIRCLE_RADIUS
+        };
+        rtree_search(tr, rect, check_particle_collision, args);
+        
+        list<Particle_t*>::iterator itr;
+        for (itr = temp_list.begin(); itr != temp_list.end(); ++itr)
+        {
+            Particle_t* temp = *itr;
+            double rectTemp[] = { temp->x, temp->y, temp->x, temp->y };
+            rtree_delete(tr, rectTemp, &temp);
+            rtree_insert(tr, rectTemp, &temp);
+        }
+        
+        temp_list.clear();
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
@@ -198,7 +246,7 @@ static void draw_particles(bool clear)
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
         LCD_SetTextColor(particles[i].color);
-        LCD_DrawFullCircle((uint16_t)particles[i].x, (uint16_t)particles[i].y, CIRCLE_RADIUS);
+        LCD_DrawCircle((uint16_t)particles[i].x, (uint16_t)particles[i].y, CIRCLE_RADIUS);
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
