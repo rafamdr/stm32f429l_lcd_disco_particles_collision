@@ -122,8 +122,6 @@ static void check_particle_collision(Particle_t* part)
                 float distanceCorrection = (minDistance - distanceVectMag) / 2.0;
                 PVector d = PVector(distanceVect.x, distanceVect.y);
                 PVector correctionVector = d.normalize().mult(distanceCorrection);
-//                otherPosition.add(correctionVector);
-//                position.sub(correctionVector);
                 
                 distanceVect = PVector(position.x - otherPosition.x, position.y - otherPosition.y);
                 
@@ -162,11 +160,6 @@ static void check_particle_collision(Particle_t* part)
                 bFinal[0].y = cosine * bTemp[0].y + sine * bTemp[0].x;
                 bFinal[1].x = cosine * bTemp[1].x - sine * bTemp[1].y;
                 bFinal[1].y = cosine * bTemp[1].y + sine * bTemp[1].x;
-                
-//                otherPosition.x = position.x + bFinal[1].x;
-//                otherPosition.y = position.y + bFinal[1].y;
-//                
-//                position.add(bFinal[0]);
                 
                 part->vx = cosine * vFinal[0].x - sine * vFinal[0].y;
                 part->vy = cosine * vFinal[0].y + sine * vFinal[0].x;
