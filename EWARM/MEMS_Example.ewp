@@ -317,10 +317,10 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\</state>
-          <state>$PROJ_DIR$\..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include</state>
-          <state>$PROJ_DIR$\..\..\..\..\Libraries\CMSIS\Include</state>
-          <state>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\inc</state>
-          <state>$PROJ_DIR$\..\..\..\..\Utilities\STM32F429I-Discovery</state>
+          <state>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include</state>
+          <state>$PROJ_DIR$\..\Libraries\CMSIS\Include</state>
+          <state>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\inc</state>
+          <state>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -974,127 +974,127 @@
   <group>
     <name>EWARM</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429_439xx.s</name>
+      <name>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429_439xx.s</name>
     </file>
   </group>
   <group>
     <name>STM32F429I-Discovery</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery.c</name>
+      <name>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_l3gd20.c</name>
+      <name>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_l3gd20.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_lcd.c</name>
+      <name>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_lcd.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_sdram.c</name>
+      <name>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery\stm32f429i_discovery_sdram.c</name>
     </file>
   </group>
   <group>
     <name>STM32F4xx_StdPeriph_Driver</name>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\misc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\misc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_adc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_can.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_can.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_crc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_crc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_aes.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_aes.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_des.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_des.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_tdes.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_cryp_tdes.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dac.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dbgmcu.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dbgmcu.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dcmi.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dcmi.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma2d.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_dma2d.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_exti.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_exti.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_flash.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_fmc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_fmc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_md5.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_md5.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_sha1.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_hash_sha1.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_i2c.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_i2c.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_iwdg.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_iwdg.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_ltdc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_ltdc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_pwr.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_pwr.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rcc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rcc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rng.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rng.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rtc.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_rtc.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_sai.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_sai.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_sdio.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_sdio.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_spi.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_syscfg.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_syscfg.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_tim.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_usart.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c</name>
+      <name>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_wwdg.c</name>
     </file>
   </group>
   <group>
