@@ -10,6 +10,12 @@
 #include <stdbool.h>
 #include "rtree.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
@@ -1295,5 +1301,9 @@ int main() {
         all();
         printf("PASSED\n");
     }
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif

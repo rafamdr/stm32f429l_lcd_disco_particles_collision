@@ -8,6 +8,11 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 struct rtree;
 
 bool rtree_insert(struct rtree *rtree, double *rect, void *item);
@@ -22,6 +27,10 @@ bool rtree_search(struct rtree *rtree, double *rect,
                   void *udata);
 
 void rtree_set_allocator(void *(malloc)(size_t), void (*free)(void*));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

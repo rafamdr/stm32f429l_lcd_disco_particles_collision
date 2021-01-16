@@ -3,13 +3,15 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 #include "app.h"
-#include "math.h"
-#include <time.h>
-#include <stdlib.h>
-#include "rtree.h"
-#include <list>
 #include "vector.hpp"
+#include <list>
 
+extern "C" {
+    #include "math.h"
+    #include <time.h>
+    #include <stdlib.h>
+    #include "rtree.h"
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Defines/macros
@@ -17,8 +19,8 @@
 #define LCD_WIDTH                       240
 #define LCD_HEIGHT                      320
 
-#define CIRCLE_RADIUS                   10
-#define NUMBER_OF_PARTICLES             20
+#define CIRCLE_RADIUS                   6
+#define NUMBER_OF_PARTICLES             80
 #define INITIAL_DIST_BETWEEN_PARTS      8
 #define MAX_PARTICLES_PER_ROW           (LCD_WIDTH / (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS)))
 #define MAX_PARTICLES_PER_COL           (LCD_HEIGHT / (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS)))
@@ -44,6 +46,12 @@
 
 
 // ---------------------------------------------------------------------------------------------------------------------
+// Private typedefs
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+
+// ---------------------------------------------------------------------------------------------------------------------
 // Private constants
 // ---------------------------------------------------------------------------------------------------------------------
 static const uint16_t colors[] = 
@@ -56,8 +64,8 @@ static const uint16_t colors[] =
 // ---------------------------------------------------------------------------------------------------------------------
 // Private variables
 // ---------------------------------------------------------------------------------------------------------------------
+static struct rtree *tr;
 static Particle_t particles[NUMBER_OF_PARTICLES];
-struct rtree *tr;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Private prototypes
@@ -70,11 +78,13 @@ struct rtree *tr;
 static void initialize_particles(void)
 {
     srand(time(0));
-    tr = rtree_new(sizeof(Particle_t*), 2);
+    memset(particles, 0, sizeof(particles));
+    tr = rtree_new(sizeof(struct city*), 2);
     
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
         Particle_t* part = &particles[i];
+        part->used = 1;
         part->color = colors[rand() % (sizeof(colors)/sizeof(colors[0]))];
         part->vx = (rand() % MAX_INITIAL_SPEED) * ((rand() % 2 == 0) ? -1 : 1);
         part->vx = MAX(part->vx, MIN_INITIAL_SPEED) * (1.0/REFRESH_RATE);
@@ -83,7 +93,10 @@ static void initialize_particles(void)
         part->x = CIRCLE_RADIUS + (i % MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
         part->y = CIRCLE_RADIUS + (i / MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
         
-        double rect[] = { part->x, part->y, part->x, part->y };
+        double rect[] = { 
+            part->x - CIRCLE_RADIUS, part->y - CIRCLE_RADIUS, part->x + CIRCLE_RADIUS, part->y + CIRCLE_RADIUS 
+        };
+        
         rtree_insert(tr, rect, &part);
     }
 }
@@ -117,13 +130,12 @@ static void check_boundaries_collision(Particle_t* part)
 
 static bool check_particle_collision(const double *rect, const void *item, void *udata)
 {
-    //int* args[] = { (int*)part, (int*)&temp_list };
+    int** args = (int**)udata;
     
+    Particle_t* part = (Particle_t*)*args[0];
+    list<Particle_t*>* changeList = (list<Particle_t*>*)args[1];
     Particle_t* temp = *((Particle_t**)item);
-    int* args = (int*)udata;
-    Particle_t* part = (Particle_t*)args[0];
-    list<Particle_t*>* temp_list = (list<Particle_t*>*)args[1];
-    
+
     if(part != temp)
     {
         PVector position(part->x, part->y);
@@ -190,13 +202,8 @@ static bool check_particle_collision(const double *rect, const void *item, void 
             temp->x = otherPosition.x;
             temp->y = otherPosition.y;
             
-            temp_list->push_front(temp);
+            changeList->push_front(temp);
         }
-    }
-    else
-    {
-        static int a = 0;
-        a++;
     }
     
     return true;
@@ -207,33 +214,37 @@ static void update_particles(void)
 {
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
-        Particle_t* part = &particles[i];
+        Particle_t* part = (Particle_t*)&particles[i];
         part->x += part->vx;
         part->y += part->vy;
         check_boundaries_collision(part);
-        
-        list<Particle_t*> temp_list;
-        temp_list.push_front(part);
-        int* args[] = { (int*)part, (int*)&temp_list };
         
         double rect[] = { 
             part->x - 2 * CIRCLE_RADIUS, 
             part->y - 2 * CIRCLE_RADIUS, 
             part->x + 2 * CIRCLE_RADIUS, 
-            part->y + 2 * CIRCLE_RADIUS
+            part->y + 2 * CIRCLE_RADIUS 
         };
-        rtree_search(tr, rect, check_particle_collision, args);
         
-        list<Particle_t*>::iterator itr;
-        for (itr = temp_list.begin(); itr != temp_list.end(); ++itr)
+        list<Particle_t*> changeList;
+        changeList.push_front(part);
+        
+        int* args[] = {
+            (int*)&part,
+            (int*)&changeList
+        };
+        
+        rtree_search(tr, rect, check_particle_collision, &args);
+        
+        for(list<Particle_t*>::iterator it = changeList.begin(); it != changeList.end(); it++)
         {
-            Particle_t* temp = *itr;
-            double rectTemp[] = { temp->x, temp->y, temp->x, temp->y };
-            rtree_delete(tr, rectTemp, &temp);
-            rtree_insert(tr, rectTemp, &temp);
+            Particle_t* partTemp = (Particle_t*)*it;
+            double rect[] = { 
+                part->x - CIRCLE_RADIUS, part->y - CIRCLE_RADIUS, part->x + CIRCLE_RADIUS, part->y + CIRCLE_RADIUS 
+            };
+            rtree_delete(tr, rect, &part);
+            rtree_insert(tr, rect, &part);
         }
-        
-        temp_list.clear();
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
@@ -245,8 +256,9 @@ static void draw_particles(bool clear)
     
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
-        LCD_SetTextColor(particles[i].color);
-        LCD_DrawCircle((uint16_t)particles[i].x, (uint16_t)particles[i].y, CIRCLE_RADIUS);
+        Particle_t* part = (Particle_t*)&particles[i];
+        LCD_SetTextColor(part->color);
+        LCD_DrawCircle((uint16_t)part->x, (uint16_t)part->y, CIRCLE_RADIUS);
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
@@ -265,6 +277,6 @@ void app_update(void)
 {
     draw_particles(true);
     update_particles();
-    Delay(REFRESH_PERIOD);
+    delayMiliSecs(REFRESH_PERIOD);
 }
 // ---------------------------------------------------------------------------------------------------------------------
