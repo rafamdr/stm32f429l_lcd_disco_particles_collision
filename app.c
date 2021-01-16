@@ -33,7 +33,8 @@ extern "C" {
                                                 (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS))                     \
                                             )                                                                          \
                                         )
-  
+
+#define MAX_FRICTION_RAND_MOD           10
 #define MAX_FRICTION                    0.1f
 #define REFRESH_RATE                    60 //Hz
 #define REFRESH_PERIOD                  ((uint32_t)((1.0/REFRESH_RATE) * 1000))
@@ -86,10 +87,18 @@ static void initialize_particles(void)
         Particle_t* part = &particles[i];
         part->used = 1;
         part->color = colors[rand() % (sizeof(colors)/sizeof(colors[0]))];
+        
         part->vx = (rand() % MAX_INITIAL_SPEED) * ((rand() % 2 == 0) ? -1 : 1);
         part->vx = MAX(part->vx, MIN_INITIAL_SPEED) * (1.0/REFRESH_RATE);
         part->vy = (rand() % MAX_INITIAL_SPEED) * ((rand() % 2 == 0) ? -1 : 1);
         part->vy = MAX(part->vy, MIN_INITIAL_SPEED) * (1.0/REFRESH_RATE);
+        
+        part->ax = (rand() % MAX_FRICTION_RAND_MOD);
+        part->ax = MAX_FRICTION/REFRESH_RATE / MAX(part->ax, 1);
+        
+        part->ay = (rand() % MAX_FRICTION_RAND_MOD);
+        part->ay = MAX_FRICTION/REFRESH_RATE / MAX(part->ay, 1);
+        
         part->x = CIRCLE_RADIUS + (i % MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
         part->y = CIRCLE_RADIUS + (i / MAX_PARTICLES_PER_ROW) * (2 * (CIRCLE_RADIUS + INITIAL_DIST_BETWEEN_PARTS));
         
@@ -217,8 +226,6 @@ static void update_particles(void)
         Particle_t* part = (Particle_t*)&particles[i];
         part->x += part->vx;
         part->y += part->vy;
-        part->vx *= (1.0 - MAX_FRICTION/REFRESH_RATE);
-        part->vy *= (1.0 - MAX_FRICTION/REFRESH_RATE);
         check_boundaries_collision(part);
         
         double rect[] = { 
@@ -247,6 +254,9 @@ static void update_particles(void)
             rtree_delete(tr, rect, &partTemp);
             rtree_insert(tr, rect, &partTemp);
         }
+        
+        part->vx *= (1.0 - part->ax);
+        part->vy *= (1.0 - part->ay);
     }
 }
 // ---------------------------------------------------------------------------------------------------------------------
