@@ -242,10 +242,10 @@ static void update_particles(void)
         {
             Particle_t* partTemp = (Particle_t*)*it;
             double rect[] = { 
-                part->x - CIRCLE_RADIUS, part->y - CIRCLE_RADIUS, part->x + CIRCLE_RADIUS, part->y + CIRCLE_RADIUS 
+                partTemp->x - CIRCLE_RADIUS, partTemp->y - CIRCLE_RADIUS, partTemp->x + CIRCLE_RADIUS, partTemp->y + CIRCLE_RADIUS 
             };
-            rtree_delete(tr, rect, &part);
-            rtree_insert(tr, rect, &part);
+            rtree_delete(tr, rect, &partTemp);
+            rtree_insert(tr, rect, &partTemp);
         }
     }
 }
