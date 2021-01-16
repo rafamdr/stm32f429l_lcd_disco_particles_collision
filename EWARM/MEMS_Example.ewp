@@ -34,20 +34,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>6</state>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>No specifier n, no float nor long long, no scan set, no assignment suppressing.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>5</state>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>No specifier a, A, no specifier n, no float nor long long.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -60,16 +60,16 @@
         <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+          <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -123,7 +123,7 @@
         </option>
         <option>
           <name>RTConfigPath2</name>
-          <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
+          <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Full.h</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
@@ -280,7 +280,7 @@
         </option>
         <option>
           <name>CCRequirePrototypes</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCMultibyteSupport</name>
@@ -317,10 +317,13 @@
         <option>
           <name>CCIncludePath2</name>
           <state>$PROJ_DIR$\..\</state>
+          <state>$PROJ_DIR$\..\Config</state>
           <state>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Include</state>
           <state>$PROJ_DIR$\..\Libraries\CMSIS\Include</state>
           <state>$PROJ_DIR$\..\Libraries\STM32F4xx_StdPeriph_Driver\inc</state>
           <state>$PROJ_DIR$\..\Utilities\STM32F429I-Discovery</state>
+          <state>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM4F</state>
+          <state>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\include</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -578,7 +581,7 @@
         </option>
         <option>
           <name>AUserIncludes</name>
-          <state></state>
+          <state>$PROJ_DIR$\..\Config</state>
         </option>
         <option>
           <name>AExtraOptionsCheckV2</name>
@@ -763,11 +766,12 @@
         </option>
         <option>
           <name>IlinkUseExtraOptions</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkExtraOptions</name>
-          <state></state>
+          <state>--redirect malloc=pvPortMalloc</state>
+          <state>--redirect free=vPortFree</state>
         </option>
         <option>
           <name>IlinkLowLevelInterfaceSlave</name>
@@ -976,6 +980,45 @@
     <file>
       <name>$PROJ_DIR$\..\Libraries\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f429_439xx.s</name>
     </file>
+    <file>
+      <name>$PROJ_DIR$\stm32f4xx_flash.icf</name>
+    </file>
+  </group>
+  <group>
+    <name>FreeRTOS</name>
+    <group>
+      <name>Memory</name>
+      <file>
+        <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\portable\MemMang\heap_5.c</name>
+      </file>
+    </group>
+    <group>
+      <name>portable</name>
+      <file>
+        <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM4F\port.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\portable\IAR\ARM_CM4F\portasm.s</name>
+      </file>
+    </group>
+    <file>
+      <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\croutine.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Config\FreeRTOSConfig.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\list.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\queue.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\tasks.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\Utilities\Third_Party\FreeRTOS\Source\timers.c</name>
+    </file>
   </group>
   <group>
     <name>STM32F429I-Discovery</name>
@@ -1103,6 +1146,9 @@
       <name>$PROJ_DIR$\..\app.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\..\cpu_utils.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\custom_errno.h</name>
     </file>
     <file>
@@ -1110,9 +1156,6 @@
     </file>
     <file>
       <name>$PROJ_DIR$\..\main.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\..\rtree.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\stm32f4xx_it.c</name>

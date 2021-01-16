@@ -28,8 +28,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_it.h"
-#include "utils.h"
+#include "global_includes.h"
 
 /** @addtogroup STM32F429I_DISCOVERY_Examples
   * @{
@@ -145,7 +144,8 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-    TimingDelay_Decrement();
+    extern void xPortSysTickHandler(void);
+    xPortSysTickHandler();
 }
 
 

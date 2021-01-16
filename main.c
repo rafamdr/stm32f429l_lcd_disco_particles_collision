@@ -1,12 +1,24 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Includes
 // ---------------------------------------------------------------------------------------------------------------------
-#include "main.h"
+#include "global_includes.h"
+#include "app.h"
+#include <stdlib.h>
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Private variables
 // ---------------------------------------------------------------------------------------------------------------------
+#define Background_Task_PRIO    ( tskIDLE_PRIORITY  + 10 )
+#define Background_Task_STACK   ( 512 )
 
+#define Demo_Task_PRIO          ( tskIDLE_PRIORITY  + 9 )
+#define Demo_Task_STACK         ( 3048 )
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+xTaskHandle                   Task_Handle;
+xTaskHandle                   Demo_Handle;
+xTimerHandle                  TouchScreenTimer;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Private functions
@@ -40,12 +52,8 @@ static void initialize_peripherals(void)
 }
 // ---------------------------------------------------------------------------------------------------------------------
 
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Exported functions
-// ---------------------------------------------------------------------------------------------------------------------
-int main(void)
-{
+static void Demo_Task(void * pvParameters)
+{  
     initialize_peripherals();
     app_init();
     
@@ -53,5 +61,38 @@ int main(void)
     {
         app_update();
     }
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Exported functions
+// ---------------------------------------------------------------------------------------------------------------------
+static uint8_t ucHeap5[ configTOTAL_HEAP_SIZE ];
+
+const HeapRegion_t xHeapRegions[] =
+{
+    { ( uint8_t * ) ucHeap5, configTOTAL_HEAP_SIZE },
+    { NULL, 0 } /* Terminates the array. */
+};
+
+StackType_t    demo_stack_memory[Demo_Task_STACK];
+StaticTask_t   demo_task_buffer;
+
+int main(void)
+{
+  vPortDefineHeapRegions(xHeapRegions);
+    
+ 
+   xTaskCreateStatic(Demo_Task, 
+                     (char const*)"GUI_DEMO", 
+                     Demo_Task_STACK, 
+                     NULL, 
+                     Demo_Task_PRIO, 
+                     demo_stack_memory, 
+                     &demo_task_buffer);
+
+
+  /* Start the FreeRTOS scheduler */
+  vTaskStartScheduler();
 }
 // ---------------------------------------------------------------------------------------------------------------------
