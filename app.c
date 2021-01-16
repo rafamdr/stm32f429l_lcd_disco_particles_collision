@@ -217,6 +217,8 @@ static void update_particles(void)
         Particle_t* part = (Particle_t*)&particles[i];
         part->x += part->vx;
         part->y += part->vy;
+        part->vx *= (1.0 - MAX_FRICTION/REFRESH_RATE);
+        part->vy *= (1.0 - MAX_FRICTION/REFRESH_RATE);
         check_boundaries_collision(part);
         
         double rect[] = { 
