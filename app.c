@@ -263,15 +263,15 @@ static void update_particles(void)
 
 static void draw_particles(bool clear)
 {
-    if(clear)
-        LCD_Clear(LCD_COLOR_BLACK);
-    
     for(int i = 0; i < NUMBER_OF_PARTICLES; i++)
     {
         Particle_t* part = (Particle_t*)&particles[i];
-        LCD_SetTextColor(part->color);
+        if(clear)
+            LCD_SetTextColor(LCD_COLOR_BLACK);
+        else
+            LCD_SetTextColor(part->color);
         LCD_DrawCircle((uint16_t)part->x, (uint16_t)part->y, CIRCLE_RADIUS);
-    }
+    }  
 }
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -281,14 +281,16 @@ static void draw_particles(bool clear)
 void app_init(void)
 {
     initialize_particles();
-    draw_particles(true);
+    LCD_Clear(LCD_COLOR_BLACK);
 }
 // ---------------------------------------------------------------------------------------------------------------------
 
 void app_update(void)
 {
     draw_particles(true);
+    
     update_particles();
+    draw_particles(false);
     delayMiliSecs(REFRESH_PERIOD);
 }
 // ---------------------------------------------------------------------------------------------------------------------

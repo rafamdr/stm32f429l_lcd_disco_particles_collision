@@ -71,7 +71,7 @@
 #define configUSE_TICK_HOOK	        1
 
 
-#define configCPU_CLOCK_HZ            ( ( unsigned long ) 168000000 )  
+#define configCPU_CLOCK_HZ            ( ( unsigned long ) 180000000 )  
   
 #define configTICK_RATE_HZ	        ( ( portTickType ) 1000 )
 #define configMAX_PRIORITIES		12
